@@ -7,14 +7,14 @@ import jdbc.domain.user.model.User;
 
 import java.sql.SQLException;
 
-public class userService {
+public class UserService {
     UserDao userDao;
 
-    public userService(UserDao userDao) {
+    public UserService(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    public User getUserById(Long id) {
+    public User getById(Long id) {
         try {
             return userDao.findById(id);
         } catch (SQLException e) {
@@ -22,7 +22,7 @@ public class userService {
         }
     }
 
-    public Page<User> getUserInPage(int limit, int offset) {
+    public Page<User> getAllInPage(int limit, int offset) {
         try {
             return userDao.findInPage(limit, offset);
         } catch(SQLException e) {
@@ -30,7 +30,7 @@ public class userService {
         }
     }
 
-    public int createUser(User user) {
+    public int create(User user) {
         try {
             return userDao.insertUser(user);
         } catch(SQLException e) {
