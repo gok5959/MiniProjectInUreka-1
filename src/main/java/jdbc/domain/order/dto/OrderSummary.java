@@ -9,6 +9,8 @@ public record OrderSummary(
         Long orderId,
         Long productId,
         String productName,
+        Long sellerId,
+        String sellerName,
         Long buyerId,
         String buyerName,
         Integer priceAtOrder,

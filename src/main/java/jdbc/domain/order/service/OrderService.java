@@ -68,14 +68,14 @@ public class OrderService {
             if (p == null) {
                 throw new DataAccessException("Product not found");
             }
-            if (!p.getSellerId().equals(sellerId)) {
-                throw new DataAccessException("No permission to accept");
+            if (p.getSellerId() == null || !p.getSellerId().equals(sellerId)) {
+                throw new DataAccessException("No permission to accept: seller mismatch (productSeller=" + p.getSellerId() + ", caller=" + sellerId + ")");
             }
 
             // 주문 REQUESTED → ACCEPTED
             int updated = orderDao.updateState(con, orderId, OrderState.REQUESTED, OrderState.ACCEPTED);
             if (updated != 1) {
-                throw new DataAccessException("Order state already changed");
+                throw new DataAccessException("Order state transition failed: expected REQUESTED -> ACCEPTED, current=" + o.getOrderState());
             }
             // 상품은 이미 RESERVED 상태이므로 변경 없음
             return null;
@@ -92,14 +92,14 @@ public class OrderService {
             if (p == null) {
                 throw new DataAccessException("Product not found");
             }
-            if (!p.getSellerId().equals(sellerId)) {
-                throw new DataAccessException("No permission to reject");
+            if (p.getSellerId() == null || !p.getSellerId().equals(sellerId)) {
+                throw new DataAccessException("No permission to reject: seller mismatch (productSeller=" + p.getSellerId() + ", caller=" + sellerId + ")");
             }
 
             // 주문 REQUESTED → REJECTED
             int updated = orderDao.updateState(con, orderId, OrderState.REQUESTED, OrderState.REJECTED);
             if (updated != 1) {
-                throw new DataAccessException("Order state already changed");
+                throw new DataAccessException("Order state transition failed: expected REQUESTED -> REJECTED, current=" + o.getOrderState());
             }
 
             // 상품 RESERVED → ON_SALE (조건부)
@@ -140,14 +140,14 @@ public class OrderService {
             if (p == null) {
                 throw new DataAccessException("Product not found");
             }
-            if (!p.getSellerId().equals(sellerId)) {
-                throw new DataAccessException("No permission to complete");
+            if (p.getSellerId() == null || !p.getSellerId().equals(sellerId)) {
+                throw new DataAccessException("No permission to complete: seller mismatch (productSeller=" + p.getSellerId() + ", caller=" + sellerId + ")");
             }
 
             // 주문 ACCEPTED → COMPLETED
             int updated = orderDao.updateState(con, orderId, OrderState.ACCEPTED, OrderState.COMPLETED);
             if (updated != 1) {
-                throw new DataAccessException("Order must be ACCEPTED to complete");
+                throw new DataAccessException("Order state transition failed: expected ACCEPTED -> COMPLETED, current=" + o.getOrderState());
             }
 
             // 상품 RESERVED → SOLD (조건부)

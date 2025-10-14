@@ -116,13 +116,15 @@ public class OrderDao {
 
         final String countSql = "SELECT COUNT(*) FROM orders o" + where;
         final String dataSql = """
-                    SELECT
-                      o.order_id, o.product_id, p.name AS product_name,
-                      o.buyer_id, u.name AS buyer_name,
-                      o.price_at_order, o.order_state, o.review_status, o.created_at
-                    FROM orders o
-                    JOIN products p ON p.product_id = o.product_id
-                    JOIN users    u ON u.user_id    = o.buyer_id
+                                        SELECT
+                                            o.order_id, o.product_id, p.name AS product_name,
+                                            p.seller_id AS seller_id, su.name AS seller_name,
+                                            o.buyer_id, u.name AS buyer_name,
+                                            o.price_at_order, o.order_state, o.review_status, o.created_at
+                                        FROM orders o
+                                        JOIN products p ON p.product_id = o.product_id
+                                        JOIN users    u ON u.user_id    = o.buyer_id
+                                        JOIN users    su ON su.user_id   = p.seller_id
                 """ + where + """
                     ORDER BY o.created_at DESC, o.order_id DESC
                     LIMIT ? OFFSET ?
@@ -140,17 +142,19 @@ public class OrderDao {
             List<OrderSummary> content = JdbcSupport.query(dataSql, rs -> {
                 List<OrderSummary> list = new ArrayList<>();
                 while (rs.next()) {
-                    list.add(new OrderSummary(
-                            rs.getLong("order_id"),
-                            rs.getLong("product_id"),
-                            rs.getString("product_name"),
-                            rs.getLong("buyer_id"),
-                            rs.getString("buyer_name"),
-                            rs.getInt("price_at_order"),
-                            OrderState.fromDb(rs.getString("order_state")),
-                            jdbc.domain.order.model.ReviewStatus.fromDb(rs.getString("review_status")),
-                            rs.getTimestamp("created_at").toLocalDateTime()
-                    ));
+            list.add(new OrderSummary(
+                rs.getLong("order_id"),
+                rs.getLong("product_id"),
+                rs.getString("product_name"),
+                (Long) rs.getObject("seller_id"),
+                rs.getString("seller_name"),
+                rs.getLong("buyer_id"),
+                rs.getString("buyer_name"),
+                rs.getInt("price_at_order"),
+                OrderState.fromDb(rs.getString("order_state")),
+                jdbc.domain.order.model.ReviewStatus.fromDb(rs.getString("review_status")),
+                rs.getTimestamp("created_at").toLocalDateTime()
+            ));
                 }
                 return list;
             }, paramsData.toArray());
@@ -184,13 +188,15 @@ public class OrderDao {
                 """ + where;
 
         final String dataSql = """
-                    SELECT
-                      o.order_id, o.product_id, p.name AS product_name,
-                      o.buyer_id, u.name AS buyer_name,
-                      o.price_at_order, o.order_state, o.review_status, o.created_at
-                    FROM orders o
-                    JOIN products p ON p.product_id = o.product_id
-                    JOIN users    u ON u.user_id    = o.buyer_id
+                                        SELECT
+                                            o.order_id, o.product_id, p.name AS product_name,
+                                            p.seller_id AS seller_id, su.name AS seller_name,
+                                            o.buyer_id, u.name AS buyer_name,
+                                            o.price_at_order, o.order_state, o.review_status, o.created_at
+                                        FROM orders o
+                                        JOIN products p ON p.product_id = o.product_id
+                                        JOIN users    u ON u.user_id    = o.buyer_id
+                                        JOIN users    su ON su.user_id   = p.seller_id
                 """ + where + """
                     ORDER BY o.created_at DESC, o.order_id DESC
                     LIMIT ? OFFSET ?
@@ -208,17 +214,19 @@ public class OrderDao {
             List<OrderSummary> content = JdbcSupport.query(dataSql, rs -> {
                 List<OrderSummary> list = new ArrayList<>();
                 while (rs.next()) {
-                    list.add(new OrderSummary(
-                            rs.getLong("order_id"),
-                            rs.getLong("product_id"),
-                            rs.getString("product_name"),
-                            rs.getLong("buyer_id"),
-                            rs.getString("buyer_name"),
-                            rs.getInt("price_at_order"),
-                            OrderState.fromDb(rs.getString("order_state")),
-                            jdbc.domain.order.model.ReviewStatus.fromDb(rs.getString("review_status")),
-                            rs.getTimestamp("created_at").toLocalDateTime()
-                    ));
+            list.add(new OrderSummary(
+                rs.getLong("order_id"),
+                rs.getLong("product_id"),
+                rs.getString("product_name"),
+                (Long) rs.getObject("seller_id"),
+                rs.getString("seller_name"),
+                rs.getLong("buyer_id"),
+                rs.getString("buyer_name"),
+                rs.getInt("price_at_order"),
+                OrderState.fromDb(rs.getString("order_state")),
+                jdbc.domain.order.model.ReviewStatus.fromDb(rs.getString("review_status")),
+                rs.getTimestamp("created_at").toLocalDateTime()
+            ));
                 }
                 return list;
             }, paramsData.toArray());
@@ -255,13 +263,15 @@ public class OrderDao {
 
         final String countSql = "SELECT COUNT(*) FROM orders o" + where;
         final String dataSql = """
-                    SELECT
-                      o.order_id, o.product_id, p.name AS product_name,
-                      o.buyer_id, u.name AS buyer_name,
-                      o.price_at_order, o.order_state, o.review_status, o.created_at
-                    FROM orders o
-                    JOIN products p ON p.product_id = o.product_id
-                    JOIN users    u ON u.user_id    = o.buyer_id
+                                        SELECT
+                                            o.order_id, o.product_id, p.name AS product_name,
+                                            p.seller_id AS seller_id, su.name AS seller_name,
+                                            o.buyer_id, u.name AS buyer_name,
+                                            o.price_at_order, o.order_state, o.review_status, o.created_at
+                                        FROM orders o
+                                        JOIN products p ON p.product_id = o.product_id
+                                        JOIN users    u ON u.user_id    = o.buyer_id
+                                        JOIN users    su ON su.user_id   = p.seller_id
                 """ + where + """
                     ORDER BY o.created_at DESC, o.order_id DESC
                     LIMIT ? OFFSET ?
@@ -279,17 +289,19 @@ public class OrderDao {
             List<OrderSummary> content = JdbcSupport.query(dataSql, rs -> {
                 List<OrderSummary> list = new ArrayList<>();
                 while (rs.next()) {
-                    list.add(new OrderSummary(
-                            rs.getLong("order_id"),
-                            rs.getLong("product_id"),
-                            rs.getString("product_name"),
-                            rs.getLong("buyer_id"),
-                            rs.getString("buyer_name"),
-                            rs.getInt("price_at_order"),
-                            OrderState.fromDb(rs.getString("order_state")),
-                            jdbc.domain.order.model.ReviewStatus.fromDb(rs.getString("review_status")),
-                            rs.getTimestamp("created_at").toLocalDateTime()
-                    ));
+            list.add(new OrderSummary(
+                rs.getLong("order_id"),
+                rs.getLong("product_id"),
+                rs.getString("product_name"),
+                (Long) rs.getObject("seller_id"),
+                rs.getString("seller_name"),
+                rs.getLong("buyer_id"),
+                rs.getString("buyer_name"),
+                rs.getInt("price_at_order"),
+                OrderState.fromDb(rs.getString("order_state")),
+                jdbc.domain.order.model.ReviewStatus.fromDb(rs.getString("review_status")),
+                rs.getTimestamp("created_at").toLocalDateTime()
+            ));
                 }
                 return list;
             }, paramsData.toArray());
