@@ -306,4 +306,17 @@ public class ProductDao {
             throw new DataAccessException("setSoldIfReserved failed. id=" + productId, e);
         }
     }
+
+    // 상품 소유자(seller_id)만 조회 (조회수/metrics 영향 없음)
+    public Long findSellerId(Long productId) {
+        final String sql = "SELECT seller_id FROM products WHERE product_id = ? AND deleted_at IS NULL";
+        try {
+            return JdbcSupport.query(sql, rs -> {
+                if (!rs.next()) return null;
+                return (Long) rs.getObject("seller_id");
+            }, productId);
+        } catch (SQLException e) {
+            throw new DataAccessException("findSellerId failed. id=" + productId, e);
+        }
+    }
 }

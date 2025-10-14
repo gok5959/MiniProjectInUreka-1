@@ -72,5 +72,10 @@ public class ProductService {
         });
     }
 
+    /** 조회수/metrics에 영향없이 소유자(seller_id)만 확인할 때 사용 */
+    public Long findSellerId(Long productId) {
+        return productDao.findSellerId(productId);
+    }
+
 
 }
