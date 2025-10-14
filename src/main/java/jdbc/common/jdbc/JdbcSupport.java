@@ -30,6 +30,7 @@ public class JdbcSupport {
                 return extractor.extract(rs);
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             throw new RuntimeException("쿼리 실행 실패 : " + sql, e);
         }
     }
@@ -51,6 +52,7 @@ public class JdbcSupport {
                 return extractor.extract(rs);
             }
         } catch (SQLException e) {
+            System.out.println(e.getMessage());
             throw new RuntimeException("쿼리 실행 실패 : " + sql, e);
         }
     }
@@ -60,6 +62,7 @@ public class JdbcSupport {
             setParams(ps, params);
             return ps.executeUpdate();
         } catch (SQLException e) {
+            System.out.println("업데이트 실행 실패 : " + sql +  e.getMessage());
             throw new RuntimeException("업데이트 실행 실패 : " + sql, e);
         }
     }
