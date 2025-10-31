@@ -1,3 +1,5 @@
+import jdbc.domain.user.dao.UserDao;
+import jdbc.domain.user.service.UserService;
 import swing.ui.ContextBar;
 import swing.ui.Session;
 import swing.ui.MainWindow;
@@ -7,6 +9,7 @@ import swing.ui.panels.SellerAdminPanel;
 import jdbc.domain.product.service.ProductService;
 import jdbc.domain.order.service.OrderService;
 import java.awt.Font;
+import java.io.IOException;
 
 import javax.swing.*;
 
@@ -35,10 +38,15 @@ public class Main {
 					}
 				}
 			} catch (Exception ignored) {}
-			var userDao = jdbc.domain.user.dao.UserDao.getInstance();
-			var userService = new jdbc.domain.user.service.UserService(userDao);
+			UserDao userDao = null;
+            UserService userService = null;
+            try {
+                userService = new UserService(userDao);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
-			ContextBar contextBar = new ContextBar(userService);
+            ContextBar contextBar = new ContextBar(userService);
 
 			ProductService productService = new ProductService();
 			OrderService orderService = new OrderService();

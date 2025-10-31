@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="jdbc.domain.user.dao.UserDao">
+
+    <!-- User 매핑 -->
+    <resultMap id="UserMap" type="jdbc.domain.user.model.User">
+        <id     property="userId"    column="user_id"/>
+        <result property="email"     column="email"/>
+        <result property="name"      column="name"/>
+        <result property="password"  column="password"/>
+        <result property="role"      column="role" javaType="jdbc.domain.user.model.UserRole"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="deletedAt" column="deleted_at"/>
+    </resultMap>
+
+    <!-- 단건 조회 -->
+    <select id="findById" parameterType="long" resultMap="UserMap">
+        SELECT user_id, email, name, password, role, created_at, deleted_at
+        FROM users
+        WHERE user_id = #{id}
+    </select>
+
+    <!-- 전체 조회 -->
+    <select id="findAll" resultMap="UserMap">
+        SELECT user_id, email, name, password, role, created_at, deleted_at
+        FROM users
+        ORDER BY user_id DESC
+    </select>
+
+    <!-- 페이징 목록 -->
+    <select id="findPage" resultMap="UserMap">
+        SELECT user_id, email, name, password, role, created_at, deleted_at
+        FROM users
+        ORDER BY user_id DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 전체 카운트 -->
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*) FROM users
+    </select>
+
+    <!-- 삽입 -->
+    <insert id="insertUser" parameterType="jdbc.domain.user.model.User" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO users (email, name, password, role)
+        VALUES (#{email}, #{name}, #{password}, #{role})
+    </insert>
+
+    <!-- 삭제(물리) -->
+    <delete id="deleteUser" parameterType="long">
+        DELETE FROM users WHERE user_id = #{id}
+    </delete>
+
+</mapper>
